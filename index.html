@@ -15,12 +15,17 @@
 
 <body>
     <main id="card-table">
-        <button id="new-deck">New Deck!</button>
+        <div class="top">
+            <button id="new-deck">New Deck!</button>
+            <p id="cards-remaining"></p>
+        </div>
         <h2 id="header">GAME OF WAR</h2>
+        <p class="computer-score"></p>
         <div id="cards-display">
             <div class="card-slot"></div>
             <div class="card-slot"></div>
         </div>
+        <p class="player-score"></p>
         <button id="draw-cards">Draw</button>
     </main>
     <script src="index.js"></script>

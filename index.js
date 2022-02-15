@@ -2,10 +2,15 @@
 // APIL: draw cards -  https://deckofcardsapi.com/api/deck/<<deck_id>>/draw/?count=2
 //initialize 'deckId' as an undefined varaible. We'll use this to draw cards from the correct deck (row 13)
 let deckId;
+let computerScore = 0;
+let playerScore = 0;
 const newDeck = document.getElementById("new-deck");
 const drawCards = document.getElementById("draw-cards");
 const cardsContainer = document.getElementById("cards-display");
 const header = document.getElementById("header");
+const cardsRemaining = document.getElementById("cards-remaining");
+const computerScoreDisplay = document.querySelector(".computer-score");
+const playerScoreDisplay = document.querySelector(".player-score");
 
 //function to fetch a new deck of cards using API url above
 function handleClick() {
@@ -13,6 +18,9 @@ function handleClick() {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
+            cardsRemaining.textContent = `Cards Remaining: ${data.remaining} `;
+            computerScoreDisplay.textContent = "Computer: 0";
+            playerScoreDisplay.textContent = "You: 0";
             deckId = data.deck_id;
         });
 }
@@ -24,9 +32,11 @@ function determineWinningCard(card1, card2) {
     let cardIndexValue2 = cardValues.indexOf(card2.value);
 
     if (cardIndexValue1 > cardIndexValue2) {
-        return "Card 1 Wins";
+        computerScoreDisplay.textContent = `Computer: ${(computerScore += 1)}`;
+        return "Computer Wins";
     } else if (cardIndexValue1 < cardIndexValue2) {
-        return "Card 2 Wins";
+        playerScoreDisplay.textContent = `You: ${(playerScore += 1)}`;
+        return "You Win";
     } else {
         return "WAR!";
     }
@@ -49,5 +59,21 @@ drawCards.addEventListener("click", () => {
             `;
             let winningText = determineWinningCard(data.cards[0], data.cards[1]);
             header.textContent = winningText;
+
+            cardsRemaining.textContent = `Cards Remaining: ${data.remaining} `;
+
+            if (data.remaining === 0) {
+                drawCards.disabled = true;
+                drawCards.textContent = "No Cards Left";
+                drawCards.className = "draw-cards empty";
+
+                if (computerScore > playerScore) {
+                    header.textContent = "Computers Triumph";
+                } else if (computerScore < playerScore) {
+                    header.textContent = "Humans Prevail!";
+                } else {
+                    header.textContent = "It's a Tie.";
+                }
+            }
         });
 });
